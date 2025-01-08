@@ -9,7 +9,7 @@ function NewPasswordPage() {
   const emailId = searchParams.get("email"); // Get the email query parameter from the URL
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [email, setEmail] = useState(emailId || "");
+  const [email] = useState(emailId || "");
   const [equal, setEqual] = useState(true);
 
   useEffect(() => {

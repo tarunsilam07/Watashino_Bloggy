@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
     if (emailParam) setEmail(emailParam);
 
     if (!urlToken || !emailParam) setError(true);
-  }, []);
+  }, [resetUser]);
 
   useEffect(() => {
     if (token) resetUser();
