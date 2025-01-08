@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -6,11 +7,17 @@ import axios from "axios";
 function NewPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const emailId = searchParams.get("email"); // Get the email query parameter from the URL
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [email] = useState(emailId || "");
+  const [email, setEmail] = useState("");
   const [equal, setEqual] = useState(true);
+
+  useEffect(() => {
+    const emailId = searchParams.get("email"); // Retrieve email query parameter
+    if (emailId) {
+      setEmail(emailId);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (newPassword === confirmPassword && newPassword.length > 7) {
@@ -36,7 +43,9 @@ function NewPasswordPage() {
         <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Reset Your Password</h1>
         <div className="space-y-4">
           <div>
-            <label htmlFor="newpassword" className="block text-sm font-medium text-gray-700">New Password</label>
+            <label htmlFor="newpassword" className="block text-sm font-medium text-gray-700">
+              New Password
+            </label>
             <input
               type="password"
               id="newpassword"
@@ -45,7 +54,9 @@ function NewPasswordPage() {
             />
           </div>
           <div>
-            <label htmlFor="confirmpassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <label htmlFor="confirmpassword" className="block text-sm font-medium text-gray-700">
+              Confirm Password
+            </label>
             <input
               type="password"
               id="confirmpassword"
