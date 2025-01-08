@@ -36,7 +36,7 @@ export default async function sendEmail({email,emailType,userId }:any) {
 
     const verificationLink = `${process.env.DOMAIN}/${
       emailType === "VERIFY" ? "verifyemail" : "resetpassword"
-    }?token=${encodeURIComponent(hashedToken)}&id=${encodeURIComponent(
+    }/?token=${encodeURIComponent(hashedToken)}&id=${encodeURIComponent(
       hashedEmail
     )}`;
 
