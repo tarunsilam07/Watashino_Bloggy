@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
@@ -78,4 +78,12 @@ function NewPasswordPage() {
   );
 }
 
-export default NewPasswordPage;
+function NewPasswordPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewPasswordPage />
+    </Suspense>
+  );
+}
+
+export default NewPasswordPageWrapper;
