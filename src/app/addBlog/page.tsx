@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import NavBar from "@/components/NavBar";
+import { useRouter } from "next/navigation";
 
 export default function AddBlog() {
+  const router=useRouter();
   const [blog, setBlog] = useState({
     title: "",
     body: "",
@@ -64,6 +66,8 @@ export default function AddBlog() {
       const updatedBlog = { ...blog, coverImageURL: url };
       const response = await axios.post("/api/blog/addBlog", updatedBlog);
       console.log(response.data);
+      const id=response.data.blog._id
+       router.push(`blog/${id}`);
     } catch (error: any) {
       console.log("Error", error);
     }

@@ -1,9 +1,8 @@
-"use client";
+"use client"
 import axios from "axios";
 import Navbar from "@/components/NavBar";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image"; // Import Image component
 
 interface User {
   username: string;
@@ -62,7 +61,7 @@ const ProfilePage = () => {
       }
     };
     fetchBlogs();
-  }, [user]);
+  }, []);
 
   const handleLogOut = async () => {
     try {
@@ -111,12 +110,10 @@ const ProfilePage = () => {
       <div className={`max-w-6xl mx-auto mt-10 p-8 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} shadow-xl rounded-lg`}>
         <div className="flex items-center space-x-8">
           <div className="relative">
-            <Image
+            <img
               src={typeof imagePreview === 'string' ? imagePreview : user.profileImageURL}
               alt="Profile"
               className="w-28 h-28 rounded-full object-cover border-4 border-blue-500 shadow-lg transition-transform duration-300 transform hover:scale-110"
-              width={112} // Width for the profile image
-              height={112} // Height for the profile image
             />
             <label
               htmlFor="imageUpload"
@@ -152,12 +149,10 @@ const ProfilePage = () => {
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {recentPosts.slice(0, 3).map((post) => (
                 <div key={`${post.id}-${post.title}`} className={`p-6 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-lg shadow-lg hover:scale-105 transition duration-300`}>
-                  <Image
+                  <img
                     src={post.coverImageURL}
                     alt={post.title}
                     className="w-full h-48 object-cover rounded-t-lg mb-4"
-                    width={400} // Width for the post cover image
-                    height={200} // Height for the post cover image
                   />
                   <h3 className="text-lg font-semibold">{post.title}</h3>
                   <p className="text-sm mt-2 text-gray-600">{post.body.slice(0, 100)}...</p>
