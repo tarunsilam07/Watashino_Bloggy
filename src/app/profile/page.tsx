@@ -54,7 +54,7 @@ const ProfilePage = () => {
           withCredentials: true,
         });
         setRecentPosts(response.data?.blogs || []);
-      } catch (err) {
+      } catch (err:any) {
         console.log("Failed to load blogs",err);
       } finally {
         console.log(false);

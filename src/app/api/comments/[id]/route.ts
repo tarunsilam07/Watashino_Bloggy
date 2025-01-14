@@ -1,8 +1,6 @@
 import { connect } from '@/dbConfig/dbConfig';
 import { NextResponse, NextRequest } from 'next/server';
 import Comment from '@/models/commentModel';
-import User from '@/models/userModel';
-import Blog from '@/models/blogModel';
 connect();
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {

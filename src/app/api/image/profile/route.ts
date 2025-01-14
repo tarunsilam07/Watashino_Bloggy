@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     });
 
     const userId=getDataFromToken(req);
-    const update = await User.findOneAndUpdate(
+        await User.findOneAndUpdate(
         { _id: userId }, 
         { profileImageURL: uploadResponse.secure_url }, 
         { new: true } 
@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       secure_url: uploadResponse.secure_url,
-      update
     });
   } catch (error: any) {
     console.error("Cloudinary upload error:", error.message);
