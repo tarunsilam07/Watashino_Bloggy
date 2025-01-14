@@ -12,6 +12,7 @@ export default function Blog() {
     const [user, setUser] = useState<any>(null);
     const [comments, setComments] = useState<string>("");  // Ensuring comments is a string
     const [blogComments, setBlogComments] = useState<any[]>([]);  // Initialize with an empty array
+    const [blogUser, setBlogUser] = useState<any>(null);
 
     const onComment = async () => {
         if (!comments.trim()) return;  // Ensure there is a comment before submitting
@@ -41,12 +42,21 @@ export default function Blog() {
             try {
                 const response = await axios.get(`/api/blog/${id}`);
                 setBlog(response.data.blog);
-                setUser(response.data.user);
+                setBlogUser(response.data.user);
             } catch (err) {
                 console.log("Error fetching blog:", err);
             }
         };
 
+        const fetchUser=async()=>{
+            try{
+            const response=await axios.get('/api/users/me')
+            setUser(response.data.user);
+            } catch(err:any){
+                console.log(err)
+            }
+        }
+        fetchUser();
         fetchBlog();
         fetchComments();
     }, []);  // Only trigger on `id` change
@@ -75,7 +85,7 @@ export default function Blog() {
                         </div>
                         <div className="flex items-center gap-2">
                             <FaUserCircle />
-                            <p>{user.username}</p>
+                            <p>{blogUser.username}</p>
                         </div>
                     </div>
                 </div>
@@ -100,16 +110,16 @@ export default function Blog() {
 
                 {/* Author Info */}
                 <div className="mt-12 flex items-center p-6 bg-gradient-to-r from-indigo-50 to-gray-100 border border-indigo-200 rounded-xl shadow-lg">
-                    {user.profileImageURL && (
+                    {blogUser.profileImageURL && (
                         <img
-                            src={user.profileImageURL}
-                            alt={user.username}
+                            src={blogUser.profileImageURL}
+                            alt={blogUser.username}
                             className="w-20 h-20 rounded-full border-4 border-indigo-400 mr-6 shadow-md"
                         />
                     )}
                     <div>
-                        <h2 className="text-xl font-bold text-indigo-600">{user.username}</h2>
-                        <p className="text-sm text-gray-600">{user.email}</p>
+                        <h2 className="text-xl font-bold text-indigo-600">{blogUser.username}</h2>
+                        <p className="text-sm text-gray-600">{blogUser.email}</p>
                     </div>
                 </div>
 
