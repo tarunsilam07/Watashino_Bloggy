@@ -2,26 +2,37 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams } from "next/navigation";  // Use useRouter and useParams
 import Navbar from "@/components/NavBar";
 import { FaCalendarAlt, FaUserCircle } from "react-icons/fa";
+import Image from "next/image";  // Import Image for optimization
+
+interface Comment {
+    _id: string;
+    content: string;
+    createdBy: {
+        username: string;
+        profileImageURL?: string;
+    };
+    createdAt: string;
+}
 
 export default function Blog() {
     const { id } = useParams();
     const [blog, setBlog] = useState<any>(null);
     const [user, setUser] = useState<any>(null);
-    const [comments, setComments] = useState<any>("");
-    const [blogComments, setBlogComments] = useState<any>(null);
+    const [comments, setComments] = useState<string>("");  // Ensure comments is a string
+    const [blogComments, setBlogComments] = useState<Comment[]>([]);  // Using the Comment type
 
     const onComment = async () => {
+        if (!comments.trim()) return;
         try {
-            if (!comments) return;
             const response = await axios.post('/api/blog/comments', { comments, user, blog });
             console.log(response.data);
-            setComments(""); // Clear input after submission
-            fetchComments(); // Refresh comments
-        } catch (error: any) {
-            console.log("error", error);
+            setComments("");  // Clear input after submission
+            fetchComments();  // Refresh comments
+        } catch (error) {
+            console.log("Error submitting comment:", error);
         }
     };
 
@@ -29,8 +40,8 @@ export default function Blog() {
         try {
             const response = await axios.get(`/api/comments/${id}`);
             setBlogComments(response.data.comments);
-        } catch (error: any) {
-            console.log(error);
+        } catch (error) {
+            console.log("Error fetching comments:", error);
         }
     };
 
@@ -42,14 +53,14 @@ export default function Blog() {
                 const response = await axios.get(`/api/blog/${id}`);
                 setBlog(response.data.blog);
                 setUser(response.data.user);
-            } catch (err: any) {
-                console.log(err);
+            } catch (err) {
+                console.log("Error fetching blog:", err);
             }
         };
 
         fetchBlog();
         fetchComments();
-    }, [id]);
+    }, [id, fetchComments]);  // Add fetchComments as a dependency
 
     if (!blog || !user) {
         return (
@@ -82,10 +93,13 @@ export default function Blog() {
 
                 {/* Blog Cover Image */}
                 <div className="relative mb-8 rounded-lg shadow-xl overflow-hidden">
-                    <img
+                    <Image
                         src={blog.coverImageURL}
                         alt={blog.title}
-                        className="w-full h-auto max-h-[500px] object-cover hover:scale-105 transition-transform duration-500"
+                        layout="responsive"
+                        width={800}
+                        height={500}
+                        className="object-cover hover:scale-105 transition-transform duration-500"
                     />
                 </div>
 
@@ -101,9 +115,11 @@ export default function Blog() {
                 {/* Author Info */}
                 <div className="mt-12 flex items-center p-6 bg-gradient-to-r from-indigo-50 to-gray-100 border border-indigo-200 rounded-xl shadow-lg">
                     {user.profileImageURL && (
-                        <img
+                        <Image
                             src={user.profileImageURL}
                             alt={user.username}
+                            width={80}
+                            height={80}
                             className="w-20 h-20 rounded-full border-4 border-indigo-400 mr-6 shadow-md"
                         />
                     )}
@@ -117,13 +133,15 @@ export default function Blog() {
                 <div className="mt-12">
                     <h2 className="text-2xl font-bold mb-6">Comments</h2>
                     <ul className="space-y-6">
-                        {blogComments?.map((comment: any) => (
+                        {blogComments.map((comment: Comment) => (
                             <li key={comment._id} className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                                 <div className="flex items-start gap-4">
                                     {comment.createdBy.profileImageURL ? (
-                                        <img
+                                        <Image
                                             src={comment.createdBy.profileImageURL}
                                             alt={comment.createdBy.username}
+                                            width={48}
+                                            height={48}
                                             className="w-12 h-12 rounded-full border-2 border-indigo-400 shadow-md"
                                         />
                                     ) : (
@@ -135,9 +153,8 @@ export default function Blog() {
                                         <div className="flex items-center justify-between mb-2">
                                             <h3 className="font-bold text-gray-800">{comment.createdBy.username}</h3>
                                             <span className="text-sm text-gray-500">
-                                              {new Date(comment.createdAt).toLocaleString([], { hour: '2-digit', minute: '2-digit' })}
+                                                {new Date(comment.createdAt).toLocaleString([], { hour: '2-digit', minute: '2-digit' })}
                                             </span>
-
                                         </div>
                                         <p className="text-gray-700">{comment.content}</p>
                                     </div>
@@ -156,9 +173,9 @@ export default function Blog() {
                         />
                         <button
                             onClick={onComment}
-                            disabled={!comments}
+                            disabled={!comments.trim()}
                             className={`mt-4 px-6 py-3 bg-indigo-500 text-white rounded-lg shadow-md transition ${
-                                !comments ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-600"
+                                !comments.trim() ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-600"
                             }`}
                         >
                             Submit Comment

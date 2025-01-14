@@ -1,7 +1,9 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import NavBar from "@/components/NavBar";
+import Image from "next/image";
 
 interface Blog {
   _id: string;
@@ -23,9 +25,9 @@ const BlogsPage = () => {
           withCredentials: true,
         });
         setBlogs(response.data?.blogs || []);
-      } catch (err:any) {
-        setError("Failed to load blogs");
-        console.log(err)
+      } catch (err: any) {
+        setError("Failed to load blogs.");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -34,8 +36,8 @@ const BlogsPage = () => {
     fetchBlogs();
   }, []);
 
-  if (loading) return <p className="text-black">Loading blogs...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading) return <p className="text-black text-center">Loading blogs...</p>;
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
     <>
@@ -50,11 +52,13 @@ const BlogsPage = () => {
               key={blog._id}
               className="card h-full bg-white text-black border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl"
             >
-              <div className="w-full h-48">
-                <img
+              <div className="w-full h-48 relative">
+                <Image
                   src={blog.coverImageURL}
                   alt={blog.title}
-                  className="w-full h-full object-cover"
+                  layout="fill"
+                  objectFit="cover"
+                  className="w-full h-full"
                 />
               </div>
               <div className="p-4 flex flex-col">
