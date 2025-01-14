@@ -23,8 +23,9 @@ const BlogsPage = () => {
           withCredentials: true,
         });
         setBlogs(response.data?.blogs || []);
-      } catch (err) {
+      } catch (err:any) {
         setError("Failed to load blogs");
+        console.log(err)
       } finally {
         setLoading(false);
       }

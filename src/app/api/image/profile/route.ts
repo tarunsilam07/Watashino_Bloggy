@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       secure_url: uploadResponse.secure_url,
+      update
     });
   } catch (error: any) {
     console.error("Cloudinary upload error:", error.message);

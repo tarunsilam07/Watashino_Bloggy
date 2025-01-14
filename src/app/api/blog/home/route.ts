@@ -3,7 +3,7 @@ import {connect} from '@/dbConfig/dbConfig'
 import Blog from "@/models/blogModel";
 connect();
 
-export async function GET(request:NextRequest){
+export async function GET(){
     try {
         const blogs=await Blog.find({});
         return NextResponse.json({message:"Blogs fectched successfully",success:true,blogs},{status:200});

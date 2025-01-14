@@ -9,10 +9,12 @@ export async function POST(request: NextRequest) {
         if (!comments || !user || !blog) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
+        const blogId=blog._id
+        const userId=user._id
         const comment = await Comment.create({
             content: comments,
-            blogId: blog._id,
-            createdBy: user._id
+            blogId:blogId ,
+            createdBy: userId
         });
         return NextResponse.json({ message: "Comment has been posted", comment }, { status: 201 });
     } catch (error: any) {
