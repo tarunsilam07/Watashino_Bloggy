@@ -7,10 +7,14 @@ connect();
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { id } = params;
+    const blogId = params?.id;
+
+    if (!blogId) {
+      return NextResponse.json({ message: 'Blog ID is required' }, { status: 400 });
+    }
 
     // Find the blog by ID
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(blogId);
 
     if (!blog) {
       return NextResponse.json({ message: 'Blog not found' }, { status: 404 });
