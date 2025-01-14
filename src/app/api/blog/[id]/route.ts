@@ -5,10 +5,7 @@ import { connect } from '@/dbConfig/dbConfig';
 
 connect();
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } } // Correctly type the params
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
 
