@@ -42,7 +42,7 @@ const ProfilePage = () => {
       try {
         const response = await axios.get<{ user: User }>("api/users/me");
         setUser(response.data.user || user);
-      } catch (error) {
+      } catch (error:any) {
         console.error("Error fetching user data:", error);
       }
     };
