@@ -5,9 +5,10 @@ import { connect } from '@/dbConfig/dbConfig';
 
 connect();
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest) {
   try {
-    const { id: blogId } = await params;
+    const url = new URL(request.url);
+    const blogId = url.pathname.split('/').pop();
 
     if (!blogId) {
       return NextResponse.json({ message: 'Blog ID is required' }, { status: 400 });
