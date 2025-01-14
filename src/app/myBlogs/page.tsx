@@ -1,8 +1,7 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "@/components/NavBar";
+import NavBar from "@/components/NavBar";
 
 interface Blog {
   _id: string;
@@ -12,21 +11,20 @@ interface Blog {
   coverImageURL: string;
 }
 
-export default function Home() {
+const BlogsPage = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get("/api/blog/home");
-        if (response.data.success) {
-          setBlogs(response.data.blogs);
-        } else {
-          console.error("Failed to fetch blogs:", response.data.error);
-        }
-      } catch (error: any) {
-        console.error("Error fetching blogs:", error.message);
+        const response = await axios.get("/api/blog/myBlogs", {
+          withCredentials: true,
+        });
+        setBlogs(response.data?.blogs || []);
+      } catch (err) {
+        setError("Failed to load blogs");
       } finally {
         setLoading(false);
       }
@@ -35,15 +33,16 @@ export default function Home() {
     fetchBlogs();
   }, []);
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading blogs...</div>;
-  }
+  if (loading) return <p className="text-black">Loading blogs...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <>
-      <Navbar />
+      <NavBar />
       <div className="bg-white min-h-screen p-6">
-        <h1 className="text-3xl font-bold text-black mb-6 text-center">Blogs</h1>
+        <h1 className="text-3xl font-bold text-black mb-6 text-center">
+          User Blogs
+        </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {blogs.map((blog) => (
             <div
@@ -78,4 +77,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default BlogsPage;

@@ -12,7 +12,7 @@ export async function GET(request:NextRequest) {
         const user=await User.findOne({_id:userId}).select("-password");
         return NextResponse.json({
             message:"User Found",
-            data:user
+            user:user
         })
 
     } catch (error:any) {
