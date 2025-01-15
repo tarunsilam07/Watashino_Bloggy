@@ -3,19 +3,23 @@ import React, { useState } from "react";
 import axios from "axios";
 import NavBar from "@/components/NavBar";
 import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast'
 
 export default function AddBlog() {
-  const router=useRouter();
+  const router = useRouter();
   const [blog, setBlog] = useState({
     title: "",
     body: "",
     coverImageURL: "",
   });
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleImageURL = async (): Promise<string | null> => {
     if (!image) {
       console.error("No image selected.");
+      toast.error("No image selected.");
       return null;
     }
 
@@ -25,7 +29,6 @@ export default function AddBlog() {
       reader.onload = async () => {
         try {
           const base64Image = reader.result;
-
           const response = await fetch("/api/image/upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -34,21 +37,22 @@ export default function AddBlog() {
 
           const data = await response.json();
           if (data.success) {
-            console.log("Image uploaded successfully:", data.secure_url);
             resolve(data.secure_url);
           } else {
-            console.error("Image upload failed:", data.error);
             reject(new Error(data.error));
+            toast.error("Failed to upload image.");
           }
         } catch (err: any) {
           console.error("Error uploading image:", err.message);
           reject(err);
+          toast.error("Error uploading image.");
         }
       };
 
       reader.onerror = (error) => {
         console.error("FileReader error:", error);
         reject(error);
+        toast.error("FileReader error.");
       };
 
       reader.readAsDataURL(image);
@@ -56,41 +60,60 @@ export default function AddBlog() {
   };
 
   const onAddBlog = async () => {
+    setLoading(true); // Start loading
     try {
       const url = await handleImageURL();
       if (!url) {
         console.error("Failed to upload image");
+        toast.error("Failed to upload image.");
+        setLoading(false); // Stop loading
         return;
       }
 
       const updatedBlog = { ...blog, coverImageURL: url };
       const response = await axios.post("/api/blog/addBlog", updatedBlog);
-      console.log(response.data);
-      const id=response.data.blog._id
-       router.push(`blog/${id}`);
+      const id = response.data.blog._id;
+      toast.success("Blog created successfully!");
+      router.push(`blog/${id}`);
     } catch (error: any) {
       console.log("Error", error);
+      toast.error("Error creating blog.");
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   return (
     <>
       <NavBar />
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-12">
-        <div className="bg-white shadow-md rounded-lg w-full max-w-lg p-8">
-          <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-            Create a Blog ✍️
+      <div className="min-h-screen bg-white flex justify-center items-center px-6 py-16">
+        <div className="w-full max-w-2xl p-10 shadow-2xl rounded-xl space-y-8 border border-gray-300 bg-gray-50">
+          <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-6">
+            Create Your Blog ✍️
           </h1>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               onAddBlog();
             }}
+            className="space-y-6"
           >
-            <div className="mb-6">
+            <div className="space-y-2">
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-lg font-semibold text-gray-700"
               >
                 Blog Title
               </label>
@@ -99,31 +122,43 @@ export default function AddBlog() {
                 type="text"
                 id="title"
                 name="title"
-                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 text-gray-800"
-                placeholder="Enter blog title"
+                className="w-full px-5 py-4 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 text-gray-800 shadow-md"
+                placeholder="Enter your blog title"
+                required
               />
             </div>
 
-            <div className="mb-6">
+            <div className="space-y-2">
               <label
                 htmlFor="coverImage"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-lg font-semibold text-gray-700"
               >
                 Cover Image
               </label>
-              <input
-                onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
-                type="file"
-                id="coverImage"
-                name="coverImage"
-                className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-              />
+              <div className="border-2 border-dashed border-gray-400 rounded-lg p-6 space-y-4 bg-gray-50 hover:bg-gray-100 transition duration-300 shadow-md">
+                <input
+                  onChange={handleImageChange}
+                  type="file"
+                  id="coverImage"
+                  name="coverImage"
+                  className="w-full py-3 text-sm text-gray-800 file:mr-4 file:px-4 file:py-2 file:border-0 file:bg-indigo-600 file:text-white rounded-lg hover:file:bg-indigo-700 transition duration-200"
+                />
+                {imagePreview && (
+                  <div className="mt-4 flex justify-center">
+                    <img
+                      src={imagePreview}
+                      alt="Image preview"
+                      className="max-w-xs rounded-lg shadow-lg"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="mb-6">
+            <div className="space-y-2">
               <label
                 htmlFor="body"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-lg font-semibold text-gray-700"
               >
                 Blog Content
               </label>
@@ -131,18 +166,24 @@ export default function AddBlog() {
                 onChange={(e) => setBlog({ ...blog, body: e.target.value })}
                 id="body"
                 name="body"
-                rows={6}
-                className="text-gray-800 w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                rows={8}
+                className="w-full px-5 py-4 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 text-gray-800 shadow-md"
                 placeholder="Write your blog content here..."
+                required
               ></textarea>
             </div>
 
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center">
               <button
                 type="submit"
-                className="px-6 py-3 text-white font-medium bg-gradient-to-r from-indigo-600 to-blue-500 rounded-md shadow-md hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 transition duration-200 transform hover:scale-105"
+                disabled={loading} // Disable button while loading
+                className="px-8 py-4 text-white font-semibold bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 transition duration-200 transform hover:scale-105"
               >
-                Publish Blog 🚀
+                {loading ? (
+                  <span>Publishing...</span> // Show loading text
+                ) : (
+                  <span>Publish Blog 🚀</span> // Default text
+                )}
               </button>
             </div>
           </form>

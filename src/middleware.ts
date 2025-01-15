@@ -22,6 +22,10 @@ export const config={
         '/profile',
         '/login',
         '/signup',
-        '/verifyemail'
+        '/verifyemail',
+        '/addBlog',
+        '/blog/:path',
+        '/myBlogs',
+        '/blogs'
     ]
 }

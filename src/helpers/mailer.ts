@@ -2,14 +2,14 @@ import nodemailer from "nodemailer";
 import User from "@/models/userModel";
 import bcryptjs from "bcryptjs";
 
-export default async function sendEmail({email,emailType,userId }:any) {
+export default async function sendEmail({ email, emailType, userId }: any) {
   try {
     let hashedToken = await bcryptjs.hash(userId.toString(), 10);
 
     let hashedEmail = await bcryptjs.hash(email, 10);
-    
-    hashedToken=hashedToken.replace(/[^a-zA-Z0-9]/g, "");
-    hashedEmail=hashedEmail.replace(/[^a-zA-Z0-9]/g, "");
+
+    hashedToken = hashedToken.replace(/[^a-zA-Z0-9]/g, "");
+    hashedEmail = hashedEmail.replace(/[^a-zA-Z0-9]/g, "");
 
     if (emailType === "VERIFY") {
       await User.findByIdAndUpdate(userId, {
@@ -26,11 +26,11 @@ export default async function sendEmail({email,emailType,userId }:any) {
     }
 
     const transport = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
+      host: "smtp-relay.sendinblue.com",
+      port: 587,
       auth: {
-        user: process.env.MAILTRAP_USER,
-        pass: process.env.MAILTRAP_PASS,
+        user: process.env.BREVO_USER,
+        pass: process.env.BREVO_API_KEY,
       },
     });
 
@@ -43,8 +43,7 @@ export default async function sendEmail({email,emailType,userId }:any) {
     const mailOptions = {
       from: "tarun79767@gmail.com",
       to: email,
-      subject:
-        emailType === "VERIFY" ? "Verify your email" : "Reset your password",
+      subject: emailType === "VERIFY" ? "Verify your email" : "Reset your password",
       html: `
         <!DOCTYPE html>
         <html lang="en">
@@ -54,64 +53,75 @@ export default async function sendEmail({email,emailType,userId }:any) {
           <title>${emailType === "VERIFY" ? "Email Verification" : "Password Reset"}</title>
           <style>
             body {
-              font-family: Arial, sans-serif;
-              background-color: #f4f4f4;
+              font-family: 'Roboto', Arial, sans-serif;
+              background-color: #f3f8fc;
               margin: 0;
               padding: 0;
+              color: #333;
             }
             .email-container {
               max-width: 600px;
-              margin: 20px auto;
-              background-color: #ffffff;
-              border-radius: 8px;
+              margin: 30px auto;
+              background: #ffffff;
+              border-radius: 12px;
               overflow: hidden;
-              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
             }
             .header {
-              background-color: #4f46e5;
+              background: linear-gradient(135deg, #64b5f6, #1e88e5);
               color: #ffffff;
-              padding: 20px;
+              padding: 30px;
               text-align: center;
             }
             .header h1 {
               margin: 0;
-              font-size: 24px;
+              font-size: 26px;
+              font-weight: bold;
             }
             .content {
-              padding: 20px;
+              padding: 20px 30px;
               text-align: center;
-              color: #333333;
+              color: #444;
             }
             .content p {
               font-size: 16px;
               line-height: 1.6;
-              margin: 0 0 20px;
+              margin: 15px 0;
+              color: #555;
             }
             .button-container {
               margin: 20px 0;
             }
             .button {
-              background-color: #4f46e5;
-              color: #ffffff;
+              background: linear-gradient(135deg, #1e88e5, #42a5f5);
+              color: #ffffff !important;
               text-decoration: none;
-              padding: 12px 24px;
-              border-radius: 6px;
+              padding: 14px 32px;
+              border-radius: 8px;
               font-size: 16px;
+              font-weight: bold;
               display: inline-block;
+              transition: background 0.3s;
             }
             .button:hover {
-              background-color: #3730a3;
+              background: linear-gradient(135deg, #42a5f5, #1e88e5);
+            }
+            .link {
+              color: #1e88e5;
+              text-decoration: none;
+              font-weight: bold;
             }
             .footer {
-              background-color: #f4f4f4;
-              color: #999999;
+              background-color: #e3f2fd;
+              color: #555;
               text-align: center;
-              padding: 10px;
+              padding: 15px;
               font-size: 14px;
             }
             .footer a {
-              color: #4f46e5;
+              color: #1e88e5;
               text-decoration: none;
+              font-weight: bold;
             }
             .footer a:hover {
               text-decoration: underline;
@@ -128,29 +138,28 @@ export default async function sendEmail({email,emailType,userId }:any) {
               }</h1>
             </div>
             <div class="content">
-              <p>Hello,</p>
+              <p>Dear User,</p>
               <p>${
                 emailType === "VERIFY"
-                  ? "We received a request to verify your email."
+                  ? "Thank you for joining Watashino Bloggy! Please verify your email to continue."
                   : "We received a request to reset your password."
               }</p>
-              <p>Please click the button below to ${
-                emailType === "VERIFY"
-                  ? "complete the verification process"
-                  : "reset your password"
+              <p>Click the button below to ${
+                emailType === "VERIFY" ? "verify your email" : "reset your password"
               }:</p>
               <div class="button-container">
                 <a href="${verificationLink}" class="button" target="_blank">${
-        emailType === "VERIFY" ? "Verify Email" : "Reset Password"
-      }</a>
+                  emailType === "VERIFY" ? "Verify Email" : "Reset Password"
+                }</a>
               </div>
-              <p>If you didn't request this, you can safely ignore this email.</p>
-              <p>Alternatively, you can copy and paste the following link into your browser:</p>
-              <p><a href="${verificationLink}" target="_blank">${verificationLink}</a></p>
+              <p>If you cannot access the button, copy and paste this link into your browser:</p>
+              <p><a href="${verificationLink}" target="_blank" class="link">${verificationLink}</a></p>
             </div>
             <div class="footer">
               <p>&copy; 2025 Watashino Bloggy. All rights reserved.</p>
-              <p><a href="https://watashino-bloggy.vercel.app" target="_blank">Visit our website</a></p>
+              <p>
+                <a href="https://watashino-bloggy.vercel.app" target="_blank">Visit our website</a>
+              </p>
             </div>
           </div>
         </body>
@@ -160,7 +169,7 @@ export default async function sendEmail({email,emailType,userId }:any) {
 
     const mailResponse = await transport.sendMail(mailOptions);
     return mailResponse;
-  } catch (error:any) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 }
