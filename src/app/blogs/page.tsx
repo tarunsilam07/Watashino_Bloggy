@@ -22,7 +22,7 @@ const UnderConstruction: React.FC = () => {
         🚧 Page Under Construction 🚧
       </h1>
       <p style={{ fontSize: '1.25rem' }}>
-        We're working on this page. Please check back later!
+        We&apos;re working on this page. Please check back later!
       </p>
     </div>
     </>
