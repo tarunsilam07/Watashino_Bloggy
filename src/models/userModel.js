@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "/profile.webp",
   },
+  bio:{
+    type:String,
+    default:""
+  },
   forgotPasswordToken: String,
   forgotPasswordTokenExpiry: Date,
   verifyToken: String,

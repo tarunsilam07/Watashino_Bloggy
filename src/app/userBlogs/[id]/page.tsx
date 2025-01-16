@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import NavBar from "@/components/NavBar";
 import { motion } from "framer-motion";
+import { useParams } from "next/navigation";
 
 interface Blog {
   _id: string;
@@ -11,9 +12,15 @@ interface Blog {
   body: string;
   createdAt: string;
   coverImageURL: string;
+  createdBy: {
+    username: string;
+  };
 }
 
-const BlogsPage = () => {
+const UserBlogsPage = () => {
+  const params=useParams();
+  const userId=params?.id;
+  console.log(userId)
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,9 +28,7 @@ const BlogsPage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get("/api/blog/myBlogs", {
-          withCredentials: true,
-        });
+        const response = await axios.get(`/api/userBlogs/${userId}`);
         setBlogs(response.data?.blogs || []);
       } catch (err: any) {
         setError("Failed to load blogs");
@@ -66,7 +71,7 @@ const BlogsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          My Blogs
+          {blogs.length > 0 && blogs[0].createdBy.username} Blogs
         </motion.h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {blogs.map((blog) => (
@@ -125,4 +130,4 @@ const BlogsPage = () => {
   );
 };
 
-export default BlogsPage;
+export default UserBlogsPage;

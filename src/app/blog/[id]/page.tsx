@@ -1,10 +1,11 @@
-'use client';
-
+"use client"
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import Navbar from "@/components/NavBar";
 import { FaCalendarAlt, FaUserCircle, FaQuoteLeft } from "react-icons/fa";
+import ConfirmationModal from '@/components/ConfirmationModal' // Import the modal
 
 export default function Blog() {
     const { id } = useParams();
@@ -13,6 +14,8 @@ export default function Blog() {
     const [comments, setComments] = useState<string>("");
     const [blogComments, setBlogComments] = useState<any[]>([]);
     const [blogUser, setBlogUser] = useState<any>(null);
+    const [showModal, setShowModal] = useState(false); // State to control the modal visibility
+    const [loading, setLoading] = useState(false); // Loading state for blog deletion
 
     const onComment = async () => {
         if (!comments.trim()) return;
@@ -34,38 +37,50 @@ export default function Blog() {
         }
     };
 
-    useEffect(() => {
-        if (!id) return;
+    const fetchBlog = async () => {
+        try {
+            const response = await axios.get(`/api/blog/${id}`);
+            setBlog(response.data.blog);
+            setBlogUser(response.data.user);
+        } catch (err) {
+            console.log("Error fetching blog:", err);
+        }
+    };
 
-        const fetchBlog = async () => {
-            try {
-                const response = await axios.get(`/api/blog/${id}`);
-                setBlog(response.data.blog);
-                setBlogUser(response.data.user);
-            } catch (err) {
-                console.log("Error fetching blog:", err);
-            }
-        };
+    const fetchUser = async () => {
+        try {
+            const response = await axios.get('/api/users/me');
+            setUser(response.data.user);
+        } catch (err: any) {
+            console.log(err);
+        }
+    };
 
-        const fetchUser = async () => {
-            try {
-                const response = await axios.get('/api/users/me');
-                setUser(response.data.user);
-            } catch (err: any) {
-                console.log(err);
-            }
-        };
-
-        fetchUser();
-        fetchBlog();
-        fetchComments();
-    }, [id]);
+    const deleteBlog = async () => {
+        setLoading(true); // Start loading
+        try {
+            await axios.delete(`/api/deleteBlog/${id}`);
+            // Redirect or inform the user after deletion
+            window.location.href = "/"; // Redirect to homepage or another page
+        } catch (error) {
+            console.log("Error deleting blog:", error);
+        } finally {
+            setLoading(false); // Stop loading once the request is completed
+        }
+    };
 
     const calculateReadingTime = () => {
         const words = blog.body.split(/\s+/).length;
         const minutes = Math.ceil(words / 200); // Approx. 200 words per minute reading speed
         return minutes;
     };
+
+    useEffect(() => {
+        if (!id) return;
+        fetchUser();
+        fetchBlog();
+        fetchComments();
+    }, [id]);
 
     if (!blog || !user) {
         return (
@@ -91,13 +106,15 @@ export default function Blog() {
                         </div>
                         <div className="flex items-center gap-2">
                             <FaUserCircle />
-                            <p>{blogUser.username}</p>
+                            <Link href={`/profile/${blogUser._id}`}>
+                                <p className="text-indigo-500 hover:underline">{blogUser.username}</p>
+                            </Link>
                         </div>
                         <div className="text-sm text-gray-500">⏱ {calculateReadingTime()} min read</div>
                     </div>
                 </div>
 
-                {/* Blog Cover Image with Interactive Effect */}
+                {/* Blog Cover Image */}
                 <div className="relative mb-8 rounded-lg shadow-xl overflow-hidden group">
                     <img
                         src={blog.coverImageURL}
@@ -107,8 +124,27 @@ export default function Blog() {
                     <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 group-hover:opacity-0 transition-opacity duration-300"></div>
                 </div>
 
+                {/* Delete Blog Button */}
+                {blogUser._id === user._id && (
+                    <div className="text-center mt-4 mb-8">
+                        <button
+                            onClick={() => setShowModal(true)} // Show the modal when the button is clicked
+                            className="px-6 py-3 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
+                        >
+                            Delete Blog
+                        </button>
+                    </div>
+                )}
+
+                {/* Loading Spinner while deleting */}
+                {loading && (
+                    <div className="absolute inset-0 bg-opacity-50 bg-black flex justify-center items-center z-10">
+                        <div className="w-16 h-16 border-4 border-t-4 border-indigo-500 border-solid rounded-full animate-spin"></div>
+                    </div>
+                )}
+
                 {/* Blog Content */}
-                <div className="prose lg:prose-xl mx-auto leading-relaxed space-y-6">
+                <div className="prose lg:prose-xl mx-auto leading-relaxed space-y-6 mt-8">
                     {blog.body.split("\n\n").map((section: string, index: number) => (
                         <div key={index} className="p-6 bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
                             {index % 2 === 0 ? (
@@ -133,7 +169,9 @@ export default function Blog() {
                         />
                     )}
                     <div>
-                        <h2 className="text-xl font-bold text-indigo-600">{blogUser.username}</h2>
+                        <Link href={`/profile/${blogUser._id}`}>
+                            <h2 className="text-xl font-bold text-indigo-600 hover:underline">{blogUser.username}</h2>
+                        </Link>
                         <p className="text-sm text-gray-600">{blogUser.email}</p>
                     </div>
                 </div>
@@ -141,35 +179,37 @@ export default function Blog() {
                 {/* Comments Section */}
                 <div className="mt-12">
                     <h2 className="text-2xl font-bold mb-6">Comments</h2>
-                        <ul className="space-y-6">
-                            {blogComments.map((comment: any) => (
-                                <li key={comment._id} className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                                    <div className="flex items-start gap-4">
-                                        {comment.createdBy.profileImageURL ? (
-                                            <img
-                                                src={comment.createdBy.profileImageURL}
-                                                alt={comment.createdBy.username}
-                                                className="w-12 h-12 rounded-full border-2 border-indigo-400 shadow-md"
-                                            />
-                                        ) : (
-                                            <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-xl font-bold text-white">
-                                                {comment.createdBy.username.charAt(0).toUpperCase()}
-                                            </div>
-                                        )}
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <h3 className="font-bold text-gray-800">{comment.createdBy.username}</h3>
-                                                <span className="text-sm text-gray-500">
-                                                    {new Date(comment.createdAt).toLocaleDateString()}{" "}
-                                                    {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
-                                            </div>
-                                            <p className="text-gray-700">{comment.content}</p>
+                    <ul className="space-y-6">
+                        {blogComments.map((comment: any) => (
+                            <li key={comment._id} className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div className="flex items-start gap-4">
+                                    {comment.createdBy.profileImageURL ? (
+                                        <img
+                                            src={comment.createdBy.profileImageURL}
+                                            alt={comment.createdBy.username}
+                                            className="w-12 h-12 rounded-full border-2 border-indigo-400 shadow-md"
+                                        />
+                                    ) : (
+                                        <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-xl font-bold text-white">
+                                            {comment.createdBy.username.charAt(0).toUpperCase()}
                                         </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <Link href={`/profile/${comment.createdBy._id}`}>
+                                                <h3 className="font-bold text-indigo-600 hover:underline">{comment.createdBy.username}</h3>
+                                            </Link>
+                                            <span className="text-sm text-gray-500">
+                                                {new Date(comment.createdAt).toLocaleDateString()}{" "}
+                                                {new Date(comment.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        </div>
+                                        <p className="text-gray-700">{comment.content}</p>
                                     </div>
-                                </li>
-                            ))}
-                        </ul>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
 
                     <div className="mt-8">
                         <h3 className="text-lg font-semibold mb-4">Leave a Comment</h3>
@@ -192,6 +232,13 @@ export default function Blog() {
                     </div>
                 </div>
             </div>
+
+            {/* Confirmation Modal */}
+            <ConfirmationModal 
+                showModal={showModal} 
+                onConfirm={deleteBlog} 
+                onCancel={() => setShowModal(false)} 
+            />
         </div>
     );
 }
