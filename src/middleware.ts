@@ -26,6 +26,8 @@ export const config={
         '/addBlog',
         '/blog/:path',
         '/myBlogs',
-        '/blogs'
+        '/blogs',
+        '/profile:path',
+        '/userBlogs'
     ]
 }
