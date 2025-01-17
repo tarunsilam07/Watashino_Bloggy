@@ -193,7 +193,7 @@ const UserProfilePage = () => {
                       <div key={post._id} className="bg-white shadow-lg rounded-lg p-4">
                         <h3 className="text-xl font-semibold">{post.title}</h3>
                         <img src={post.coverImageURL} alt="Post Cover" className="w-full h-56 object-cover rounded-lg mt-4" />
-                        <p className="mt-4 text-gray-600">{post.body}</p>
+                        <p className="mt-4 text-gray-600">{post.body.substring(0, 100)}...</p>
                       </div>
                     ))}
                   </div>
