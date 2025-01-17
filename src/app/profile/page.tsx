@@ -117,12 +117,12 @@ const ProfilePage = () => {
     }
   };
 
-  const toggleDarkMode = () => {
-    const newDarkModeState = !darkMode;
-    setDarkMode(newDarkModeState);
-    localStorage.setItem("darkMode", String(newDarkModeState));
-    toast.success(`Switched to ${newDarkModeState ? "dark" : "light"} mode.`);
-  };
+  // const toggleDarkMode = () => {
+  //   const newDarkModeState = !darkMode;
+  //   setDarkMode(newDarkModeState);
+  //   localStorage.setItem("darkMode", String(newDarkModeState));
+  //   toast.success(`Switched to ${newDarkModeState ? "dark" : "light"} mode.`);
+  // };
 
   const handleBioChange = () => {
     if (isEditingBio) {

@@ -95,7 +95,7 @@ const UserProfilePage = () => {
   const toggleFollow = async () => {
     try {
       const endpoint = isFollowing ? "/api/unfollow" : "/api/follow";
-      const response = await axios.post(endpoint, { userId, myId });
+      await axios.post(endpoint, { userId, myId });
 
       setIsFollowing(!isFollowing);
       setFollowersCount((prevCount) => (isFollowing ? prevCount - 1 : prevCount + 1));
