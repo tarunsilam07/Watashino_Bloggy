@@ -12,8 +12,8 @@ interface User {
   profileImageURL: string;
   bio: string;
   postCount: number;
-  followers: number;
-  following: number;
+  followers: [];
+  following: [];
 }
 
 interface Post {
@@ -31,8 +31,8 @@ const ProfilePage = () => {
     profileImageURL: "/profile.webp",
     bio: "Passionate writer exploring the art of storytelling.",
     postCount: 25,
-    followers: 1200,
-    following: 300,
+    followers: [],
+    following: [],
   });
   const [recentPosts, setRecentPosts] = useState<Post[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -141,126 +141,124 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-gray-100 to-blue-50"}`}>
-      <Navbar />
-      <div className={`max-w-6xl mx-auto mt-10 p-8 ${darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"} shadow-xl rounded-lg transition-all duration-500`}>
-        {loading ? (
-          <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center space-x-8">
-              <div className="relative group">
-                <img
-                  src={typeof imagePreview === "string" ? imagePreview : user.profileImageURL}
-                  alt="Profile"
-                  className="w-28 h-28 rounded-full object-cover border-4 border-blue-500 shadow-lg transition-transform duration-300 transform group-hover:scale-110"
-                />
-                <label
-                  htmlFor="imageUpload"
-                  className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer shadow-lg hover:bg-blue-500 transition duration-300 group-hover:scale-110"
-                >
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                    aria-label="Upload Profile Image"
-                  />
-                  {uploading ? "⏳" : "📸"}
-                </label>
-              </div>
-              <div className="flex flex-col justify-center space-y-2">
-                <h1 className="text-3xl font-bold">{user.username}</h1>
-                <p className="text-lg">{user.email}</p>
-                <div className="mt-2 space-y-3">
-                  {isEditingBio ? (
-                    <textarea
-                      value={newBio}
-                      onChange={(e) => setNewBio(e.target.value)}
-                      className="w-full p-2 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
-                    />
-                  ) : (
-                    <p>{user.bio}</p>
-                  )}
-                  <button
-                    onClick={handleBioChange}
-                    className="mt-2 px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-400 transition duration-300"
-                  >
-                    {isEditingBio ? (
-                      <span className="flex items-center space-x-2">
-                        <span>Save Bio</span>
-                        {loading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
-                      </span>
-                    ) : (
-                      "Edit Bio"
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className={`p-6 ${darkMode ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gradient-to-r from-blue-500 to-purple-500'} text-white rounded-lg shadow-lg hover:scale-105 transition-all duration-300 transform`}>
-                <Link href={'/myBlogs'}>
-                  <h2 className="text-xl font-semibold group-hover:underline transition duration-300">Posts</h2>
-                </Link>
-                <p className="mt-2 text-lg">{recentPosts.length} published articles</p>
-              </div>
-            </div>
-
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold">Recent Posts</h2>
-              {recentPosts.length > 0 ? (
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {recentPosts.slice(0, 3).map((post) => (
-                    <Link href={`/blog/${post._id}`} key={`${post._id}-${post.title}`} className="group">
-                      <div className={`p-6 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-lg shadow-lg hover:scale-105 transition duration-300 transform`}>
-                        <img
-                          src={post.coverImageURL}
-                          alt={post.title}
-                          className="w-full h-48 object-cover rounded-t-lg mb-4 transition-transform duration-500 group-hover:scale-105"
-                        />
-                        <h3 className="text-lg font-semibold group-hover:underline transition duration-300">{post.title}</h3>
-                        <p className="text-sm mt-2 text-gray-600">{post.body.slice(0, 100)}...</p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-4 text-gray-500">No recent posts available.</p>
-              )}
-            </div>
-
-            <div className="mt-12 flex justify-end space-x-4">
-              <button
-                className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-400 transition duration-300"
-                onClick={handleCreateNewPost}
-              >
-                Create New Post
-              </button>
-              <button
-                className="px-6 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-400 transition duration-300"
-                onClick={handleLogOut}
-              >
-                Logout
-              </button>
-            </div>
-
-            <div className="mt-6 flex justify-center">
-              <button
-                onClick={toggleDarkMode}
-                className={`px-6 py-2 rounded-full ${darkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-white'} transition duration-300`}
-              >
-                {darkMode ? 'Light Mode' : 'Dark Mode'}
-              </button>
-            </div>
-          </>
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
+  <Navbar />
+  <div className="max-w-6xl mx-auto mt-10 p-8 bg-white text-gray-800 shadow-2xl rounded-2xl">
+    {loading ? (
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500"></div>
       </div>
-    </div>
+    ) : (
+      <>
+        <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
+          <div className="relative group">
+            <img
+              src={typeof imagePreview === "string" ? imagePreview : user.profileImageURL}
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-xl"
+            />
+            <label
+              htmlFor="imageUpload"
+              className="absolute bottom-0 right-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 rounded-full cursor-pointer shadow-lg"
+            >
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+              {uploading ? "⏳" : "📸"}
+            </label>
+          </div>
+          <div className="flex flex-col space-y-4 text-center md:text-left">
+            <h1 className="text-4xl font-extrabold">{user.username}</h1>
+            <p className="text-lg text-gray-400">{user.email}</p>
+            <div>
+              {isEditingBio ? (
+                <textarea
+                  value={newBio}
+                  onChange={(e) => setNewBio(e.target.value)}
+                  className="w-full p-3 border-2 rounded-lg shadow-md focus:outline-none focus:ring-4 focus:ring-blue-400"
+                />
+              ) : (
+                <p className="text-base">{user.bio}</p>
+              )}
+              <button
+                onClick={handleBioChange}
+                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow-md hover:scale-105 hover:bg-blue-500"
+              >
+                {isEditingBio ? "Save Bio" : "Edit Bio"}
+              </button>
+            </div>
+            <div className="flex justify-center md:justify-start space-x-6">
+              <div className="text-center">
+                <h4 className="text-lg font-medium">Followers</h4>
+                <p className="text-2xl font-bold">{user.followers.length}</p>
+              </div>
+              <div className="text-center">
+                <h4 className="text-lg font-medium">Following</h4>
+                <p className="text-2xl font-bold">{user.following.length}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <h2 className="text-3xl font-extrabold">Highlights</h2>
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-lg hover:scale-105">
+              <Link href={'/myBlogs'}>
+                <h2 className="text-2xl font-semibold">Posts</h2>
+              </Link>
+              <p className="mt-2 text-lg">{recentPosts.length} published articles</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12 flex justify-end space-x-4">
+          <button
+            className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-400"
+            onClick={handleCreateNewPost}
+          >
+            Create New Post
+          </button>
+          <button
+            className="px-6 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-400"
+            onClick={handleLogOut}
+          >
+            Logout
+          </button>
+        </div>
+
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold">Recent Posts</h2>
+          {recentPosts.length > 0 ? (
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recentPosts.slice(0, 3).map((post) => (
+                <Link href={`/blog/${post._id}`} key={`${post._id}-${post.title}`} className="group">
+                  <div className="p-6 bg-gray-100 rounded-lg shadow-lg hover:scale-105 hover:shadow-2xl">
+                    <img
+                      src={post.coverImageURL}
+                      alt={post.title}
+                      className="w-full h-48 object-cover rounded-t-lg mb-4"
+                    />
+                    <h3 className="text-lg font-semibold">{post.title}</h3>
+                    <p className="text-sm mt-2 text-gray-400">{post.body.substring(0, 100)}...</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-gray-600 text-center">No posts to display</p>
+          )}
+        </div>
+      </>
+    )}
+  </div>
+</div>
+
+
   );
 };
 

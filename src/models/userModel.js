@@ -27,15 +27,29 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "/profile.webp",
   },
-  bio:{
-    type:String,
-    default:""
+  bio: {
+    type: String,
+    default: "",
   },
   forgotPasswordToken: String,
   forgotPasswordTokenExpiry: Date,
   verifyToken: String,
   verifyTokenExpiry: Date,
   hashedEmail: String,
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default:[]
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default:[]
+    },
+  ],
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
