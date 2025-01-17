@@ -73,6 +73,7 @@ const ProfilePage = () => {
 
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedDarkMode);
+    console.log(darkMode)
   }, []);
 
   const handleLogOut = async () => {
