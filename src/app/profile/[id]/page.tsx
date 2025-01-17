@@ -186,21 +186,29 @@ const UserProfilePage = () => {
               </div>
 
               <div className="mt-12">
-                <h2 className="text-2xl font-bold">Recent Posts</h2>
-                {recentPosts.length > 0 ? (
-                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {recentPosts.map((post) => (
-                      <div key={post._id} className="bg-white shadow-lg rounded-lg p-4">
-                        <h3 className="text-xl font-semibold">{post.title}</h3>
-                        <img src={post.coverImageURL} alt="Post Cover" className="w-full h-56 object-cover rounded-lg mt-4" />
-                        <p className="mt-4 text-gray-600">{post.body.substring(0, 100)}...</p>
-                      </div>
-                    ))}
+          <h2 className="text-2xl font-bold">Recent Posts</h2>
+          {recentPosts.length > 0 ? (
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recentPosts.slice(0, 3).map((post) => (
+                <Link href={`/blog/${post._id}`} key={`${post._id}-${post.title}`} className="group">
+                  <div className="p-6 bg-gray-100 rounded-lg shadow-lg hover:scale-105 hover:shadow-2xl">
+                    <img
+                      src={post.coverImageURL}
+                      alt={post.title}
+                      className="w-full h-48 object-cover rounded-t-lg mb-4"
+                    />
+                    <h3 className="text-lg font-semibold">{post.title}</h3>
+                    <p className="text-sm mt-2 text-gray-400">{post.body.substring(0, 100)}...</p>
                   </div>
-                ) : (
-                  <p className="mt-4">No posts available.</p>
-                )}
-              </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-gray-600 text-center">No posts to display</p>
+          )}
+        </div>
+
+
             </>
           )
         )}
