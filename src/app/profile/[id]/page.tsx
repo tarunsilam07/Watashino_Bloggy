@@ -84,6 +84,7 @@ const UserProfilePage = () => {
       setFollowersList(response.data.followers);
       setIsFollowersModalOpen(true); // Open the followers modal
     } catch (error: any) {
+      console.log(error)
       toast.error("Failed to fetch followers.");
     }
   };
@@ -93,6 +94,7 @@ const UserProfilePage = () => {
       setFollowingList(response.data.following);
       setIsFollowingModalOpen(true); // Open the following modal
     } catch (error: any) {
+      console.log(error)
       toast.error("Failed to fetch following.");
     }
   };
@@ -135,6 +137,7 @@ const UserProfilePage = () => {
       toast.success(isFollowing ? "Unfollowed successfully." : "Followed successfully.");
       fetchUserAndBlogs();
     } catch (error: any) {
+      console.log(error)
       toast.error(error.response?.data?.message || "Error updating follow status.");
     }
   };

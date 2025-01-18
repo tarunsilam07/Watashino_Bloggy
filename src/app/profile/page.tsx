@@ -8,7 +8,7 @@ import Link from "next/link";
 import FollowModal from "@/components/FollowModal";
 
 interface User {
-  _id:String
+  _id:string
   username: string;
   email: string;
   profileImageURL: string;
@@ -95,6 +95,7 @@ const ProfilePage = () => {
       setFollowersList(response.data.followers);
       setIsFollowersModalOpen(true); // Open the followers modal
     } catch (error: any) {
+      console.log(error)
       toast.error("Failed to fetch followers.");
     }
   };
@@ -104,6 +105,7 @@ const ProfilePage = () => {
       setFollowingList(response.data.following);
       setIsFollowingModalOpen(true); // Open the following modal
     } catch (error: any) {
+      console.log(error)
       toast.error("Failed to fetch following.");
     }
   };
