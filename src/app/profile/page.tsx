@@ -5,8 +5,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import FollowModal from "@/components/FollowModal";
 
 interface User {
+  _id:String
   username: string;
   email: string;
   profileImageURL: string;
@@ -23,9 +25,16 @@ interface Post {
   body: string;
 }
 
+interface Follower {
+  _id: string;
+  username: string;
+  profileImageURL: string;
+}
+
 const ProfilePage = () => {
   const router = useRouter();
   const [user, setUser] = useState<User>({
+    _id: "default_id",
     username: "Jane Blogger",
     email: "janeblogger@example.com",
     profileImageURL: "/profile.webp",
@@ -41,6 +50,10 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [newBio, setNewBio] = useState("");
+  const [followersList, setFollowersList] = useState<Follower[]>([]);
+  const [followingsList, setFollowingList] = useState<Follower[]>([]);
+  const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
+  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -75,6 +88,25 @@ const ProfilePage = () => {
     setDarkMode(savedDarkMode);
     console.log(darkMode)
   }, []);
+
+  const fetchFollowers = async () => {
+    try {
+      const response = await axios.get(`/api/followers/${user._id}`);
+      setFollowersList(response.data.followers);
+      setIsFollowersModalOpen(true); // Open the followers modal
+    } catch (error: any) {
+      toast.error("Failed to fetch followers.");
+    }
+  };
+  const fetchFollowing = async () => {
+    try {
+      const response = await axios.get(`/api/following/${user._id}`);
+      setFollowingList(response.data.following);
+      setIsFollowingModalOpen(true); // Open the following modal
+    } catch (error: any) {
+      toast.error("Failed to fetch following.");
+    }
+  };
 
   const handleLogOut = async () => {
     try {
@@ -193,17 +225,45 @@ const ProfilePage = () => {
               </button>
             </div>
             <div className="flex justify-center md:justify-start space-x-6">
-              <div className="text-center">
-                <h4 className="text-lg font-medium">Followers</h4>
-                <p className="text-2xl font-bold">{user.followers.length}</p>
+                 <div className="flex items-center mt-4 space-x-6">
+                    <div
+                onClick={fetchFollowers}
+                className="cursor-pointer flex items-center justify-center px-6 py-4 bg-blue-100 rounded-lg border border-blue-300 shadow-md hover:shadow-lg hover:bg-blue-200 transition"
+              >
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-blue-600">{user.followers.length}</p>
+                  <p className="text-sm text-blue-500">Followers</p>
+                </div>
               </div>
-              <div className="text-center">
-                <h4 className="text-lg font-medium">Following</h4>
-                <p className="text-2xl font-bold">{user.following.length}</p>
+              <div
+                onClick={fetchFollowing}
+                className="cursor-pointer flex items-center justify-center px-6 py-4 bg-green-100 rounded-lg border border-green-300 shadow-md hover:shadow-lg hover:bg-green-200 transition"
+              >
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-green-600">{user.following.length}</p>
+                  <p className="text-sm text-green-500">Following</p>
+                </div>
               </div>
-            </div>
+                  </div>
+                  </div>
           </div>
         </div>
+
+        {isFollowersModalOpen && (
+              <FollowModal
+                title="Followers"
+                list={followersList}
+                onClose={() => setIsFollowersModalOpen(false)}
+              />
+            )}
+
+            {isFollowingModalOpen && (
+              <FollowModal
+                title="Following"
+                list={followingsList}
+                onClose={() => setIsFollowingModalOpen(false)}
+              />
+            )}
 
         <div className="mt-12">
           <h2 className="text-3xl font-extrabold">Highlights</h2>
