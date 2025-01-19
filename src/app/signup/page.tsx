@@ -25,11 +25,12 @@ export default function SignUpPage() {
     setLoading(true);
     try {
       await axios.post("/api/users/signup", user);
-      toast.success("Verify email sent! Check your inbox.");
-      toast.success("Account created successfully! Please verify to log in.");
+      toast.success("Verify email sent! Check your inbox.",{duration:6000});
+      toast.success("Account created successfully! Please verify to log in.",{duration:6000});
       router.push("/login");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Signup failed. Try again.");
+      console.log(error)
+      toast.error(error.response?.data?.message || "Try signing with a unique username and email");
     } finally {
       setLoading(false);
     }
