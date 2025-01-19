@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import NavBar from "@/components/NavBar";
 import { useRouter } from "next/navigation";
-import toast from 'react-hot-toast'
+import toast from "react-hot-toast";
 
 export default function AddBlog() {
   const router = useRouter();
@@ -98,9 +98,9 @@ export default function AddBlog() {
   return (
     <>
       <NavBar />
-      <div className="min-h-screen bg-white flex justify-center items-center px-6 py-16">
-        <div className="w-full max-w-2xl p-10 shadow-2xl rounded-xl space-y-8 border border-gray-300 bg-gray-50">
-          <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-6">
+      <div className="min-h-screen bg-white flex justify-center items-center px-4 sm:px-6 py-12 sm:py-16">
+        <div className="w-full max-w-lg sm:max-w-2xl p-6 sm:p-10 shadow-2xl rounded-xl space-y-8 border border-gray-300 bg-gray-50">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 mb-6">
             Create Your Blog ✍️
           </h1>
           <form
@@ -113,7 +113,7 @@ export default function AddBlog() {
             <div className="space-y-2">
               <label
                 htmlFor="title"
-                className="block text-lg font-semibold text-gray-700"
+                className="block text-base sm:text-lg font-semibold text-gray-700"
               >
                 Blog Title
               </label>
@@ -122,7 +122,7 @@ export default function AddBlog() {
                 type="text"
                 id="title"
                 name="title"
-                className="w-full px-5 py-4 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 text-gray-800 shadow-md"
+                className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 text-gray-800 shadow-md"
                 placeholder="Enter your blog title"
                 required
               />
@@ -131,24 +131,24 @@ export default function AddBlog() {
             <div className="space-y-2">
               <label
                 htmlFor="coverImage"
-                className="block text-lg font-semibold text-gray-700"
+                className="block text-base sm:text-lg font-semibold text-gray-700"
               >
                 Cover Image
               </label>
-              <div className="border-2 border-dashed border-gray-400 rounded-lg p-6 space-y-4 bg-gray-50 hover:bg-gray-100 transition duration-300 shadow-md">
+              <div className="border-2 border-dashed border-gray-400 rounded-lg p-4 sm:p-6 space-y-4 bg-gray-50 hover:bg-gray-100 transition duration-300 shadow-md">
                 <input
                   onChange={handleImageChange}
                   type="file"
                   id="coverImage"
                   name="coverImage"
-                  className="w-full py-3 text-sm text-gray-800 file:mr-4 file:px-4 file:py-2 file:border-0 file:bg-indigo-600 file:text-white rounded-lg hover:file:bg-indigo-700 transition duration-200"
+                  className="w-full py-2 sm:py-3 text-sm text-gray-800 file:mr-4 file:px-4 file:py-2 file:border-0 file:bg-indigo-600 file:text-white rounded-lg hover:file:bg-indigo-700 transition duration-200"
                 />
                 {imagePreview && (
                   <div className="mt-4 flex justify-center">
                     <img
                       src={imagePreview}
                       alt="Image preview"
-                      className="max-w-xs rounded-lg shadow-lg"
+                      className="max-w-full sm:max-w-xs rounded-lg shadow-lg"
                     />
                   </div>
                 )}
@@ -158,7 +158,7 @@ export default function AddBlog() {
             <div className="space-y-2">
               <label
                 htmlFor="body"
-                className="block text-lg font-semibold text-gray-700"
+                className="block text-base sm:text-lg font-semibold text-gray-700"
               >
                 Blog Content
               </label>
@@ -166,8 +166,8 @@ export default function AddBlog() {
                 onChange={(e) => setBlog({ ...blog, body: e.target.value })}
                 id="body"
                 name="body"
-                rows={8}
-                className="w-full px-5 py-4 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 text-gray-800 shadow-md"
+                rows={6}
+                className="w-full px-4 py-3 sm:px-5 sm:py-4 rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 text-gray-800 shadow-md"
                 placeholder="Write your blog content here..."
                 required
               ></textarea>
@@ -176,13 +176,13 @@ export default function AddBlog() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                disabled={loading} // Disable button while loading
-                className="px-8 py-4 text-white font-semibold bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 transition duration-200 transform hover:scale-105"
+                disabled={loading}
+                className="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 text-white font-semibold bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 transition duration-200 transform hover:scale-105"
               >
                 {loading ? (
-                  <span>Publishing...</span> // Show loading text
+                  <span>Publishing...</span>
                 ) : (
-                  <span>Publish Blog 🚀</span> // Default text
+                  <span>Publish Blog 🚀</span>
                 )}
               </button>
             </div>

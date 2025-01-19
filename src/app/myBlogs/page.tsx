@@ -59,16 +59,16 @@ const BlogsPage = () => {
   return (
     <>
       <NavBar />
-      <div className="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen p-6">
+      <div className="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen p-4 sm:p-6">
         <motion.h1
-          className="text-4xl font-extrabold text-black mb-12 text-center"
+          className="text-2xl sm:text-4xl font-extrabold text-black mb-8 sm:mb-12 text-center"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
           My Blogs
         </motion.h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {blogs.map((blog) => (
             <motion.div
               key={blog._id}
@@ -76,7 +76,7 @@ const BlogsPage = () => {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="relative w-full h-48">
+              <div className="relative w-full h-40 sm:h-48">
                 <img
                   src={blog.coverImageURL}
                   alt={blog.title}
@@ -84,9 +84,9 @@ const BlogsPage = () => {
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition-opacity duration-300" />
               </div>
-              <div className="p-6 flex flex-col">
+              <div className="p-4 sm:p-6 flex flex-col">
                 <motion.h5
-                  className="text-xl font-bold mb-2 text-gray-800"
+                  className="text-lg sm:text-xl font-bold mb-2 text-gray-800"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -94,7 +94,7 @@ const BlogsPage = () => {
                   {blog.title}
                 </motion.h5>
                 <motion.p
-                  className="text-sm text-gray-700 mb-4"
+                  className="text-sm text-gray-700 mb-3 sm:mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
@@ -102,7 +102,7 @@ const BlogsPage = () => {
                   {blog.body.substring(0, 100)}...
                 </motion.p>
                 <motion.p
-                  className="text-sm text-gray-500 mb-4"
+                  className="text-xs sm:text-sm text-gray-500 mb-3"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}

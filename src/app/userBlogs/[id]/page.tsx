@@ -18,9 +18,9 @@ interface Blog {
 }
 
 const UserBlogsPage = () => {
-  const params=useParams();
-  const userId=params?.id;
-  console.log(userId)
+  const params = useParams();
+  const userId = params?.id;
+  console.log(userId);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,34 +64,36 @@ const UserBlogsPage = () => {
   return (
     <>
       <NavBar />
-      <div className="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen p-6">
+      <div className="bg-gradient-to-br from-blue-100 via-white to-gray-100 min-h-screen p-4 sm:p-6">
         <motion.h1
-          className="text-4xl font-extrabold text-black mb-12 text-center"
+          className="text-3xl sm:text-4xl font-extrabold text-black mb-8 sm:mb-12 text-center"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
           {blogs.length > 0 && blogs[0].createdBy.username} Blogs
         </motion.h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
           {blogs.map((blog) => (
             <motion.div
               key={blog._id}
-              className="card h-full bg-white text-black border border-gray-200 rounded-lg shadow-lg overflow-hidden relative group"
-              whileHover={{ scale: 1.05 }}
+              className="card bg-white text-black border border-gray-200 rounded-lg shadow-md overflow-hidden relative group"
+              whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="relative w-full h-48">
+              {/* Image Section */}
+              <div className="relative w-full h-48 sm:h-56">
                 <img
                   src={blog.coverImageURL}
                   alt={blog.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-50 transition-opacity duration-300"></div>
               </div>
-              <div className="p-6 flex flex-col">
+              {/* Content Section */}
+              <div className="p-4 sm:p-6 flex flex-col">
                 <motion.h5
-                  className="text-xl font-bold mb-2 text-gray-800"
+                  className="text-lg sm:text-xl font-bold mb-2 text-gray-800"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -99,7 +101,7 @@ const UserBlogsPage = () => {
                   {blog.title}
                 </motion.h5>
                 <motion.p
-                  className="text-sm text-gray-700 mb-4"
+                  className="text-sm text-gray-700 mb-3 sm:mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
@@ -107,7 +109,7 @@ const UserBlogsPage = () => {
                   {blog.body.substring(0, 100)}...
                 </motion.p>
                 <motion.p
-                  className="text-sm text-gray-500 mb-4"
+                  className="text-xs sm:text-sm text-gray-500 mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
@@ -116,7 +118,7 @@ const UserBlogsPage = () => {
                 </motion.p>
                 <motion.a
                   href={`/blog/${blog._id}`}
-                  className="btn-primary bg-blue-600 text-white py-2 px-4 rounded-lg text-center mt-auto self-start shadow-lg transition-transform transform hover:scale-105 hover:bg-blue-800"
+                  className="btn-primary bg-blue-600 text-white py-2 px-4 rounded-md text-center mt-auto self-start shadow-md transition-transform transform hover:scale-105 hover:bg-blue-800"
                   whileTap={{ scale: 0.95 }}
                 >
                   View More
