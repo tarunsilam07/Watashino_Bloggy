@@ -163,74 +163,89 @@ const UserProfilePage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-gray-100 to-blue-50"}`}>
+    <div
+  className={`min-h-screen ${
+    darkMode
+      ? "bg-gray-900 text-white"
+      : "bg-gradient-to-br from-gray-100 to-blue-50 text-gray-800"
+  }`}
+>
   <Navbar />
   <div
-    className={`max-w-6xl mx-auto mt-10 p-8 ${darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"} shadow-2xl rounded-3xl border ${
+    className={`max-w-6xl mx-auto mt-10 p-4 sm:p-8 ${
+      darkMode ? "bg-gray-800" : "bg-white"
+    } shadow-2xl rounded-3xl border ${
       darkMode ? "border-gray-700" : "border-gray-300"
     }`}
   >
-    <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
       <button
         onClick={toggleDarkMode}
-        className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl hover:opacity-90 transition"
+        className="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl hover:opacity-90 transition"
       >
         {darkMode ? "Light Mode" : "Dark Mode"}
       </button>
     </div>
-
     {loading ? (
       <div className="flex justify-center items-center h-48">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600"></div>
-        <p className="ml-4 text-xl font-semibold text-blue-500">Loading user data...</p>
+        <p className="ml-4 text-xl font-semibold text-blue-500">
+          Loading user data...
+        </p>
       </div>
     ) : (
       user && (
         <>
-          <div className="flex items-center space-x-12">
-          <img
-            src={user.profileImageURL}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-2xl"
-          />
-          <div>
-          <h1 className="text-4xl font-extrabold">{user.username}</h1>
-          <p className="text-lg text-gray-400">{user.email}</p>
-            <p className="mt-3 text-gray-400">{user.bio || "No bio available."}</p>
-            <div className="flex items-center mt-6 space-x-6">
-              <div
-                onClick={fetchFollowers}
-                className="cursor-pointer flex items-center justify-center px-6 py-4 bg-blue-100 rounded-lg border border-blue-300 shadow-md hover:shadow-lg hover:bg-blue-200 transition"
-              >
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-600">{followersCount}</p>
-                  <p className="text-sm text-blue-500">Followers</p>
-                </div>
-              </div>
-              <div
-                onClick={fetchFollowing}
-                className="cursor-pointer flex items-center justify-center px-6 py-4 bg-green-100 rounded-lg border border-green-300 shadow-md hover:shadow-lg hover:bg-green-200 transition"
-              >
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-green-600">{followingCount}</p>
-                  <p className="text-sm text-green-500">Following</p>
-                </div>
-              </div>
-              {userId !== myId && (
-                <button
-                  onClick={toggleFollow}
-                  className={`px-6 py-2 font-semibold rounded-full shadow-lg ${
-                    isFollowing ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
-                  } text-white hover:shadow-xl transition-transform transform hover:scale-105`}
+          <div className="flex flex-col items-center sm:flex-row space-y-6 sm:space-y-0 sm:space-x-12">
+            <img
+              src={user.profileImageURL}
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-2xl"
+            />
+            <div className="text-center sm:text-left">
+              <h1 className="text-4xl font-extrabold">{user.username}</h1>
+              <p className="text-lg text-gray-400">{user.email}</p>
+              <p className="mt-3 text-gray-400">
+                {user.bio || "No bio available."}
+              </p>
+              <div className="flex flex-col sm:flex-row items-center mt-6 space-x-0 space-y-4 sm:space-y-0 sm:space-x-6">
+                <div
+                  onClick={fetchFollowers}
+                  className="cursor-pointer flex items-center justify-center px-6 py-4 bg-blue-100 rounded-lg border border-blue-300 shadow-md hover:shadow-lg hover:bg-blue-200 transition"
                 >
-                  {isFollowing ? "Unfollow" : "Follow"}
-                </button>
-              )}
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-blue-600">
+                      {followersCount}
+                    </p>
+                    <p className="text-sm text-blue-500">Followers</p>
+                  </div>
+                </div>
+                <div
+                  onClick={fetchFollowing}
+                  className="cursor-pointer flex items-center justify-center px-6 py-4 bg-green-100 rounded-lg border border-green-300 shadow-md hover:shadow-lg hover:bg-green-200 transition"
+                >
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-green-600">
+                      {followingCount}
+                    </p>
+                    <p className="text-sm text-green-500">Following</p>
+                  </div>
+                </div>
+                {userId !== myId && (
+                  <button
+                    onClick={toggleFollow}
+                    className={`w-full sm:w-auto px-6 py-2 font-semibold rounded-full shadow-lg ${
+                      isFollowing
+                        ? "bg-red-500 hover:bg-red-600"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    } text-white hover:shadow-xl transition-transform transform hover:scale-105`}
+                  >
+                    {isFollowing ? "Unfollow" : "Follow"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-
-
           {isFollowersModalOpen && (
             <FollowModal
               title="Followers"
@@ -238,7 +253,6 @@ const UserProfilePage = () => {
               onClose={() => setIsFollowersModalOpen(false)}
             />
           )}
-
           {isFollowingModalOpen && (
             <FollowModal
               title="Following"
@@ -246,8 +260,7 @@ const UserProfilePage = () => {
               onClose={() => setIsFollowingModalOpen(false)}
             />
           )}
-
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
               className={`p-6 ${
                 darkMode
@@ -260,32 +273,48 @@ const UserProfilePage = () => {
                   Posts
                 </h2>
               </Link>
-              <p className="mt-2 text-lg">{recentPosts.length} published articles</p>
+              <p className="mt-2 text-lg">
+                {recentPosts.length} published articles
+              </p>
             </div>
           </div>
-
           <div className="mt-16">
-            <h2 className="text-3xl font-bold">Recent Posts</h2>
-            {recentPosts.length > 0 ? (
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {recentPosts.slice(0, 3).map((post) => (
-                  <Link href={`/blog/${post._id}`} key={`${post._id}-${post.title}`} className="group">
-                    <div className="p-6 bg-gray-100 rounded-xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform">
-                      <img
-                        src={post.coverImageURL}
-                        alt={post.title}
-                        className="w-full h-48 object-cover rounded-lg mb-4"
-                      />
-                      <h3 className="text-xl font-semibold">{post.title}</h3>
-                      <p className="mt-2 text-gray-400">{post.body.substring(0, 100)}...</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-4 text-gray-600 text-center">No posts to display</p>
-            )}
-          </div>
+          <h2 className="text-3xl font-bold">Recent Posts</h2>
+          {recentPosts.length > 0 ? (
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recentPosts.slice(0, 3).map((post) => (
+                <Link
+                  href={`/blog/${post._id}`}
+                  key={`${post._id}-${post.title}`}
+                  className="group"
+                >
+                  <div
+                    className={`p-6 rounded-xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform ${
+                      darkMode
+                        ? "bg-gray-800 text-gray-200"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    <img
+                      src={post.coverImageURL}
+                      alt={post.title}
+                      className="w-full h-48 object-cover rounded-lg mb-4"
+                    />
+                    <h3 className="text-xl font-semibold">{post.title}</h3>
+                    <p className="mt-2 text-gray-400">
+                      {post.body.substring(0, 100)}...
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-gray-600 text-center">
+              No posts to display
+            </p>
+          )}
+        </div>
+
         </>
       )
     )}
