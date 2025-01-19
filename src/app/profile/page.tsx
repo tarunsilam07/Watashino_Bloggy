@@ -58,25 +58,33 @@ const ProfilePage = () => {
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchUser = async () => {
       try {
-        const [userResponse, blogsResponse] = await Promise.all([
-          axios.get("/api/users/me"),
-          axios.get("/api/blog/myBlogs", { withCredentials: true }),
-        ]);
+        const response = await axios.get<{ user: User }>("api/users/me");
+        setUser(response.data.user || user);
+        setNewBio(response.data.user.bio || user.bio);
+      } catch (error: any) {
+        toast.error("Error fetching user data.");
+        console.error("Error fetching user data:", error);
+      }
+    };
 
-        setUser(userResponse.data.user);
-        setRecentPosts(blogsResponse.data.blogs || []);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load data. Please try again.");
+    const fetchBlogs = async () => {
+      try {
+        const response = await axios.get("/api/blog/myBlogs", {
+          withCredentials: true,
+        });
+        setRecentPosts(response.data?.blogs || []);
+      } catch (err: any) {
+        toast.error("Failed to load blogs.");
+        console.log("Failed to load blogs", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchUser();
+    fetchBlogs();
 
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedDarkMode);
