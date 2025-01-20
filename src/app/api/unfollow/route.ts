@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        console.log("Request Body:", reqBody); // Log the request body for debugging
+        console.log("Request Body:", reqBody); 
 
         const userToUnfollow = await User.findById(userId);
         const currentUser = await User.findById(myId);
@@ -21,20 +21,17 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: "User not found." }, { status: 404 });
         }
 
-        // Ensure followers and following are arrays
         if (!Array.isArray(userToUnfollow.followers)) {
-            userToUnfollow.followers = []; // Initialize as empty array if not set
+            userToUnfollow.followers = []; 
         }
         if (!Array.isArray(currentUser.following)) {
-            currentUser.following = []; // Initialize as empty array if not set
+            currentUser.following = []; 
         }
 
-        // Check if not following
         if (!userToUnfollow.followers.includes(myId)) {
             return NextResponse.json({ message: "Not following this user." }, { status: 400 });
         }
 
-        // Directly update the arrays in the database using updateOne
         await User.updateOne(
             { _id: userId },
             { $pull: { followers: myId } }
@@ -45,11 +42,11 @@ export async function POST(request: NextRequest) {
             { $pull: { following: userId } }
         );
 
-        console.log("Unfollowed successfully:", { userId, myId }); // Log successful unfollow operation
+        console.log("Unfollowed successfully:", { userId, myId }); 
 
         return NextResponse.json({ message: "Unfollowed successfully." }, { status: 200 });
     } catch (error: any) {
-        console.error("Error:", error); // Log the error for debugging
+        console.error("Error:", error);
         return NextResponse.json({ message: "An error occurred.", error }, { status: 500 });
     }
 }

@@ -17,16 +17,16 @@ const BlogSchema = new mongoose.Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model
+      ref: "User", 
     },
     likes: {
       type: Number,
-      default: 0, // Number of likes
+      default: 0,
     },
     likedBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // Users who liked the blog
+        ref: "User",
       },
     ],
   },

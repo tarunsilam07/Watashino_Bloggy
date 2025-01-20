@@ -50,7 +50,7 @@ export default function ResetPaswordPage() {
   const onRetry = () => {
     setError(false);
     setLoading(true);
-    setToken(""); // Clear token to trigger verification retry
+    setToken(""); 
   };
 
   return (

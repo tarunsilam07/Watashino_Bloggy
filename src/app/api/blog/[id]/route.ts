@@ -13,15 +13,11 @@ export async function GET(request: NextRequest) {
     if (!blogId) {
       return NextResponse.json({ message: 'Blog ID is required' }, { status: 400 });
     }
-
-    // Find the blog by ID
     const blog = await Blog.findById(blogId);
 
     if (!blog) {
       return NextResponse.json({ message: 'Blog not found' }, { status: 404 });
     }
-
-    // Find the user who created the blog
     const user = await User.findById(blog.createdBy);
 
     return NextResponse.json(

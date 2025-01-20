@@ -16,12 +16,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Blog not found" }, { status: 404 });
     }
 
-    // Ensure likedBy is an array
     if (!Array.isArray(blog.likedBy)) {
       blog.likedBy = [];
     }
 
-    // Check if the user has liked the blog
     if (!blog.likedBy.includes(userId)) {
       return NextResponse.json(
         { message: "You have not liked this blog" },
@@ -29,16 +27,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update the blog using updateOne to remove userId from likedBy and decrement likes
     const result = await Blog.updateOne(
       { _id: blogId },
       {
-        $pull: { likedBy: userId },  // Remove userId from likedBy array
-        $inc: { likes: -1 }           // Decrement likes by 1
+        $pull: { likedBy: userId }, 
+        $inc: { likes: -1 }           
       }
     );
 
-    // If no document was modified, return an error
     if (result.modifiedCount === 0) {
       return NextResponse.json({ message: "Failed to unlike the blog" }, { status: 500 });
     }

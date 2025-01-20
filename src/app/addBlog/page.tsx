@@ -14,7 +14,7 @@ export default function AddBlog() {
   });
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false); 
 
   const handleImageURL = async (): Promise<string | null> => {
     if (!image) {
@@ -60,13 +60,13 @@ export default function AddBlog() {
   };
 
   const onAddBlog = async () => {
-    setLoading(true); // Start loading
+    setLoading(true); 
     try {
       const url = await handleImageURL();
       if (!url) {
         console.error("Failed to upload image");
         toast.error("Failed to upload image.");
-        setLoading(false); // Stop loading
+        setLoading(false); 
         return;
       }
 
@@ -79,7 +79,7 @@ export default function AddBlog() {
       console.log("Error", error);
       toast.error("Error creating blog.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); 
     }
   };
 

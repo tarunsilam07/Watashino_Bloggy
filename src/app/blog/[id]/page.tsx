@@ -10,7 +10,7 @@ import {
   FaQuoteLeft,
   FaThumbsUp,
 } from "react-icons/fa";
-import ConfirmationModal from "@/components/ConfirmationModal"; // Import the modal
+import ConfirmationModal from "@/components/ConfirmationModal"; 
 
 export default function Blog() {
   const { id } = useParams();
@@ -19,10 +19,10 @@ export default function Blog() {
   const [comments, setComments] = useState<string>("");
   const [blogComments, setBlogComments] = useState<any[]>([]);
   const [blogUser, setBlogUser] = useState<any>(null);
-  const [showModal, setShowModal] = useState(false); // State to control the modal visibility
-  const [loading, setLoading] = useState(false); // Loading state for blog deletion
-  const [likes, setLikes] = useState<number>(0); // Likes count
-  const [hasLiked, setHasLiked] = useState<boolean>(false); // Track if user has liked
+  const [showModal, setShowModal] = useState(false); 
+  const [loading, setLoading] = useState(false); 
+  const [likes, setLikes] = useState<number>(0); 
+  const [hasLiked, setHasLiked] = useState<boolean>(false); 
   const [blogLikes, setBlogLikes] = useState<number>(0);
 
   const onComment = async () => {
@@ -83,20 +83,20 @@ export default function Blog() {
   };
 
   const deleteBlog = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       await axios.delete(`/api/deleteBlog/${id}`);
-      window.location.href = "/"; // Redirect to homepage or another page
+      window.location.href = "/"; 
     } catch (error) {
       console.log("Error deleting blog:", error);
     } finally {
-      setLoading(false); // Stop loading once the request is completed
+      setLoading(false); 
     }
   };
 
   const calculateReadingTime = () => {
     const words = blog.body.split(/\s+/).length;
-    const minutes = Math.ceil(words / 200); // Approx. 200 words per minute reading speed
+    const minutes = Math.ceil(words / 200);
     return minutes;
   };
 
@@ -120,14 +120,14 @@ export default function Blog() {
   useEffect(() => {
     if (!id) return;
 
-    fetchUser(); // Fetch the user
-    fetchBlog(); // Fetch the blog details
-    fetchComments(); // Fetch comments
+    fetchUser(); 
+    fetchBlog(); 
+    fetchComments(); 
   }, [id]);
 
   useEffect(() => {
     if (user && id) {
-      fetchInitialLikes(); // Only call this when user and id are available
+      fetchInitialLikes(); 
     }
   }, [user, id]);
 
@@ -143,7 +143,7 @@ export default function Blog() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-gray-200 text-gray-800">
       <Navbar />
       <div className="max-w-4xl mx-auto p-6 space-y-12">
-        {/* Blog Header */}
+        
         <div className="text-center mb-8 animate__animated animate__fadeInUp">
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-600">
             {blog.title}
@@ -167,7 +167,7 @@ export default function Blog() {
           </div>
         </div>
 
-        {/* Blog Cover Image */}
+       
         <div className="relative mb-8 rounded-lg shadow-xl overflow-hidden group">
           <img
             src={blog.coverImageURL}
@@ -177,11 +177,10 @@ export default function Blog() {
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 group-hover:opacity-0 transition-opacity duration-300"></div>
         </div>
 
-        {/* Delete Blog Button */}
         {blogUser._id === user._id && (
           <div className="text-center mt-4 mb-8">
             <button
-              onClick={() => setShowModal(true)} // Show the modal when the button is clicked
+              onClick={() => setShowModal(true)} 
               className="px-6 py-3 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition duration-200"
             >
               Delete Blog
@@ -189,14 +188,14 @@ export default function Blog() {
           </div>
         )}
 
-        {/* Loading Spinner while deleting */}
+        
         {loading && (
           <div className="absolute inset-0 bg-opacity-50 bg-black flex justify-center items-center z-10">
             <div className="w-16 h-16 border-4 border-t-4 border-indigo-500 border-solid rounded-full animate-spin"></div>
           </div>
         )}
 
-        {/* Like/Unlike Button */}
+        
         <div className="text-center mt-8 mb-10 p-8 bg-gradient-to-r from-indigo-100to-indigo-300 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Give Your Vote!
@@ -225,7 +224,7 @@ export default function Blog() {
           </p>
         </div>
 
-        {/* Blog Content */}
+    
         <div className="prose lg:prose-xl mx-auto leading-relaxed space-y-6 mt-8">
           {blog.body.split("\n\n").map((section: any, index: any) => (
             <div
@@ -244,7 +243,7 @@ export default function Blog() {
           ))}
         </div>
 
-        {/* Author Info */}
+        
         <div className="mt-12 flex items-center p-6 bg-gradient-to-r from-indigo-50 to-gray-100 border border-indigo-200 rounded-xl shadow-lg group hover:bg-indigo-50 transition-colors">
           {blogUser.profileImageURL && (
             <img
@@ -263,7 +262,7 @@ export default function Blog() {
           </div>
         </div>
 
-        {/* Comments Section */}
+       
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-6">Comments</h2>
           <ul className="space-y-6">
@@ -330,7 +329,6 @@ export default function Blog() {
         </div>
       </div>
 
-      {/* Confirmation Modal */}
       <ConfirmationModal
         showModal={showModal}
         onConfirm={deleteBlog}
