@@ -13,7 +13,7 @@ const BlogSchema = new mongoose.Schema(
     coverImageURL: {
       type: String,
       required: true,
-      default: "",
+      default: "", 
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,8 +23,7 @@ const BlogSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    likedBy: [
-      {
+    likedBy: [      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },

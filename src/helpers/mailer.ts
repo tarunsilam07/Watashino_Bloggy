@@ -26,8 +26,9 @@ export default async function sendEmail({ email, emailType, userId }: any) {
     }
 
     const transport = nodemailer.createTransport({
-      host: "smtp-relay.sendinblue.com",
+      host: "smtp-relay.brevo.com",
       port: 587,
+      secure: false, // Use STARTTLS
       auth: {
         user: process.env.BREVO_USER,
         pass: process.env.BREVO_API_KEY,
